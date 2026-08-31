@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: ibvap-api
+    env: docker
+    dockerfilePath: Dockerfile.prod
+    plan: free
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+    # Optional: for production with external services
+    # - key: REDIS_HOST
+    #   value: your-redis-host
+    # - key: POSTGRES_HOST
+    #   value: your-postgres-host
+
+  # Optional: Deploy frontend separately on Vercel/Netlify
+  # Or use a static site service on Render

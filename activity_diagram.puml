@@ -1,0 +1,85 @@
+@startuml activity_diagram
+title Activity Diagram - Farmer Journey: Finding & Using Crop Cultivation Guide
+
+|Farmer|
+start
+:Open Mobile App;
+|App|
+:Check connectivity;
+if (Online?) then (yes)
+    :Trigger background sync;
+    :Fetch latest guides from API;
+    :Update offline cache;
+else (no)
+    :Load from offline cache;
+endif
+:Display Home Dashboard;
+|Farmer|
+:Tap "Crop Guides";
+|App|
+:Show Crop Categories (Cereals, Pulses, Vegetables, etc.);
+|Farmer|
+:Select Crop Category;
+|App|
+:Filter crops by category;
+:Show Crop List with Seasons;
+|Farmer|
+:Select Crop (e.g., Wheat) and Season (Rabi);
+|App|
+:Query guides for crop + season + language;
+:Display Guide Variants (Hindi, English, Regional);
+|Farmer|
+:Select Preferred Language Guide;
+|App|
+:Load full CropGuide from cache;
+:Render Guide Overview;
+|Farmer|
+fork
+    :Browse Growth Stages;
+    |App|
+    :Show Stage Timeline (Sowing → Harvest);
+    |Farmer|
+    :Select Specific Stage;
+    |App|
+    :Display Stage Activities & Warnings;
+    :Show Stage-Specific Fertilizers;
+    :Show Stage-Specific Pest Alerts;
+fork again
+    :View Fertilizer Schedule;
+    |App|
+    :Display Complete Schedule Table;
+    :Highlight Current/Upcoming Applications;
+    |Farmer|
+    :Set Reminder for Next Application;
+    |App|
+    :Create Local Notification;
+fork again
+    :Check Pest/Disease Info;
+    |App|
+    :Show Pest Cards with Images;
+    :Display Symptoms & Identification Tips;
+    :Show Preventive Measures;
+    :Show Curative Treatments (Chemical + Organic);
+    |Farmer|
+    :Identify Pest in Field;
+    :Follow Recommended Treatment;
+fork again
+    :View Harvest Information;
+    |App|
+    :Show Yield Expectations;
+    :Display Harvest Readiness Indicators;
+    :Show Post-Harvest Handling Steps;
+fork again
+    :Bookmark Guide for Quick Access;
+    |App|
+    :Save to Farmer's Bookmarks;
+    :Confirm with Toast Message;
+endfork
+|Farmer|
+:Apply Knowledge in Field;
+|App|
+:Log Farmer Action (Analytics);
+:Update Last Accessed Timestamp;
+stop
+
+@enduml
