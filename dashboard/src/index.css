@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Indian Armed Forces Theme - Deep Navy + Saffron + Ashoka Blue */
+    --background: 222 47% 7%; /* Deep navy #0a1628 */
+    --foreground: 0 0% 98%;
+    --card: 222 30% 11%; /* Card navy #162033 */
+    --card-foreground: 0 0% 98%;
+    --popover: 222 30% 11%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 24 94% 53%; /* Saffron #ff6b1a */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 222 20% 16%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 222 20% 16%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 213 94% 68%; /* Ashoka Blue #3b82f6 */
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 222 20% 18%;
+    --input: 222 20% 18%;
+    --ring: 24 94% 53%;
+    --radius: 0.625rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(ellipse at top, rgba(255,107,26,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom, rgba(59,130,246,0.06) 0%, transparent 60%);
+    background-attachment: fixed;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .tricolor-bar {
+    height: 3px;
+    background: linear-gradient(90deg, #ff6b1a 0%, #ff6b1a 33%, #ffffff 33%, #ffffff 66%, #138808 66%, #138808 100%);
+  }
+  .glass-card {
+    background: linear-gradient(135deg, hsl(var(--card) / 0.9), hsl(var(--card) / 0.7));
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+  .saffron-glow {
+    box-shadow: 0 0 20px rgba(255,107,26,0.15), 0 0 40px rgba(255,107,26,0.08);
+  }
+  .ashoka-glow {
+    box-shadow: 0 0 20px rgba(59,130,246,0.15);
+  }
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  border-radius: 0.625rem;
+}
+
+.video-stream {
+  @apply w-full h-full object-cover rounded-lg bg-gray-900;
+}
+
+.alert-critical {
+  @apply border-l-4 bg-red-950/30 backdrop-blur;
+  border-left-color: #ef4444;
+  box-shadow: 0 0 12px rgba(239,68,68,0.15);
+}
+.alert-warning {
+  @apply border-l-4 bg-amber-950/20 backdrop-blur;
+  border-left-color: #ff6b1a;
+}
+.alert-info {
+  @apply border-l-4 bg-blue-950/20 backdrop-blur;
+  border-left-color: #3b82f6;
+}
+.sih-badge {
+  background: linear-gradient(135deg, #ff6b1a, #ffffff, #138808);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

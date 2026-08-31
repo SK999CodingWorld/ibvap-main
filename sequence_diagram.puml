@@ -1,0 +1,102 @@
+@startuml sequence_diagram
+title Sequence Diagram - Farmer Accessing Crop Cultivation Guide
+
+actor Farmer as F
+participant "Mobile App\nHome Screen" as Home
+participant "Crop Selection\nScreen" as CropSelect
+participant "Guide List\nScreen" as GuideList
+participant "Guide Detail\nScreen" as GuideDetail
+participant "Growth Stage\nScreen" as StageScreen
+participant "Offline Cache" as Cache
+participant "Sync Manager" as Sync
+participant "Backend API" as API
+
+== App Launch & Initial Sync ==
+F -> Home: Opens App
+Home -> Cache: Check cached data
+alt Cache has data
+    Cache --> Home: Return cached guides
+else Cache empty/expired
+    Home -> Sync: Trigger background sync
+    Sync -> API: GET /guides/updates
+    API --> Sync: Return updated guides
+    Sync -> Cache: Store fresh data
+    Cache --> Home: Confirm sync complete
+end
+Home --> F: Show home dashboard
+
+== Browse Crops ==
+F -> Home: Tap "Crop Guides"
+Home -> CropSelect: Navigate
+CropSelect -> Cache: GET all crops
+Cache --> CropSelect: Return crop list
+CropSelect --> F: Display crop categories
+
+== Select Crop & View Guides ==
+F -> CropSelect: Select "Wheat" (Rabi season)
+CropSelect -> GuideList: Navigate with cropId
+GuideList -> Cache: GET guides for cropId + season
+Cache --> GuideList: Return matching guides
+GuideList --> F: Show guide list (language variants)
+
+== View Detailed Guide ==
+F -> GuideList: Tap "Wheat Cultivation Guide - Hindi"
+GuideList -> GuideDetail: Navigate with guideId
+GuideDetail -> Cache: GET full guide by guideId
+Cache --> GuideDetail: Return CropGuide object
+GuideDetail --> F: Show overview tab
+
+== Navigate Growth Stages ==
+F -> GuideDetail: Swipe to "Growth Stages" tab
+GuideDetail -> StageScreen: Navigate with guideId
+StageScreen -> Cache: GET growth stages for guideId
+Cache --> StageScreen: Return ordered stages
+StageScreen --> F: Display stage timeline
+
+== View Specific Stage Details ==
+F -> StageScreen: Tap "Tillering Stage (Day 21-45)"
+StageScreen -> Cache: GET stage details
+Cache --> StageScreen: Return GrowthStage object
+StageScreen --> F: Show activities, warnings, fertilizers
+
+== View Fertilizer Schedule ==
+F -> GuideDetail: Tap "Fertilizer Schedule" tab
+GuideDetail -> Cache: GET fertilizer applications
+Cache --> GuideDetail: Return list<FertilizerApplication>
+GuideDetail --> F: Show schedule table
+
+== View Pest Management ==
+F -> GuideDetail: Tap "Pest & Disease" tab
+GuideDetail -> Cache: GET pest controls
+Cache --> GuideDetail: Return list<PestControl>
+GuideDetail --> F: Show pest cards with symptoms/treatment
+
+== Bookmark Guide ==
+F -> GuideDetail: Tap bookmark icon
+GuideDetail -> Cache: Save bookmark (farmerId, guideId)
+Cache --> GuideDetail: Confirm saved
+GuideDetail --> F: Show bookmark confirmation
+
+== Offline Access (No Internet) ==
+note over F, API: Farmer in field with no connectivity
+F -> Home: Opens App (offline)
+Home -> Cache: GET cached data
+Cache --> Home: Return stale but usable data
+Home --> F: Show last synced guides
+F -> GuideDetail: Access cached guide
+GuideDetail -> Cache: GET guide data
+Cache --> GuideDetail: Return offline data
+GuideDetail --> F: Display full guide (read-only)
+
+== Background Sync When Online ==
+note over F, API: Farmer returns to connectivity
+F -> Home: Opens App
+Home -> Sync: Auto-trigger sync
+Sync -> API: GET /guides/updates?since=lastSync
+API --> Sync: Return delta updates
+Sync -> Cache: Update changed guides
+Cache --> Sync: Confirm update
+Sync --> Home: Sync complete
+Home --> F: Show "New updates available" badge
+
+@enduml
