@@ -1,0 +1,57 @@
+[
+  {
+    "id": "cam1_restricted",
+    "config": {
+      "type": "polygon",
+      "coordinates": [
+        [384, 144],
+        [896, 144],
+        [896, 576],
+        [384, 576]
+      ],
+      "name": "Restricted Zone",
+      "camera_id": "cam1",
+      "enabled": true,
+      "classes": ["person", "car", "truck", "bus", "motorcycle"],
+      "dwell_time": 2.0
+    },
+    "created_at": 1700000000,
+    "updated_at": 1700000000
+  },
+  {
+    "id": "cam1_perimeter",
+    "config": {
+      "type": "line",
+      "coordinates": [
+        [128, 360],
+        [1152, 360]
+      ],
+      "name": "Perimeter Line",
+      "camera_id": "cam1",
+      "enabled": true,
+      "classes": ["person", "car", "truck"],
+      "direction": "both"
+    },
+    "created_at": 1700000000,
+    "updated_at": 1700000000
+  },
+  {
+    "id": "cam2_restricted",
+    "config": {
+      "type": "polygon",
+      "coordinates": [
+        [384, 144],
+        [896, 144],
+        [896, 576],
+        [384, 576]
+      ],
+      "name": "Restricted Zone",
+      "camera_id": "cam2",
+      "enabled": true,
+      "classes": ["person", "car", "truck", "bus", "motorcycle"],
+      "dwell_time": 2.0
+    },
+    "created_at": 1700000000,
+    "updated_at": 1700000000
+  }
+]
