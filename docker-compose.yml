@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  postgres:
+    image: timescale/timescaledb:latest-pg16
+    environment:
+      POSTGRES_DB: ibvap
+      POSTGRES_USER: ibvap
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ibvap_secret}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ibvap"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ibvap-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=ibvap
+      - POSTGRES_USER=ibvap
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-ibvap_secret}
+      - DETECTION_MODEL=yolov8n.pt
+      - DETECTION_DEVICE=cpu
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./models/weights:/app/models/weights
+      - ./zones.json:/app/zones.json
+      - ./recordings:/app/recordings
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  ibvap-detector:
+    build:
+      context: .
+      dockerfile: Dockerfile.detector
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DETECTION_MODEL=yolov8n.pt
+      - DETECTION_DEVICE=cuda
+      - DETECTION_HALF=true
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./models/weights:/app/models/weights
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  ibvap-tracker:
+    build:
+      context: .
+      dockerfile: Dockerfile.tracker
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - LOG_LEVEL=INFO
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  ibvap-alerts:
+    build:
+      context: .
+      dockerfile: Dockerfile.alerts
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=ibvap
+      - POSTGRES_USER=ibvap
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-ibvap_secret}
+      - LOG_LEVEL=INFO
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+volumes:
+  redis_data:
+  postgres_data:
