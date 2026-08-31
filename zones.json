@@ -1,0 +1,76 @@
+[
+  {
+    "id": "cam1_restricted",
+    "config": {
+      "type": "polygon",
+      "coordinates": [
+        [384, 144],
+        [896, 144],
+        [896, 576],
+        [384, 576]
+      ],
+      "name": "North Gate Restricted Zone",
+      "camera_id": "cam1",
+      "enabled": true,
+      "classes": ["person", "car", "truck", "bus", "motorcycle"],
+      "dwell_time": 2.0,
+      "metadata": {
+        "camera_name": "BOP-01 North Sector PTZ",
+        "field_of_view": "central_gate",
+        "resolution": [1280, 720],
+        "is_calibrated": true,
+        "description": "Primary gate tactical corridor and dwell monitoring zone"
+      }
+    },
+    "created_at": 1700000000,
+    "updated_at": 1700000000
+  },
+  {
+    "id": "cam1_perimeter",
+    "config": {
+      "type": "line",
+      "coordinates": [
+        [128, 360],
+        [1152, 360]
+      ],
+      "name": "North Sector Perimeter Tripwire",
+      "camera_id": "cam1",
+      "enabled": true,
+      "classes": ["person", "car", "truck"],
+      "direction": "both",
+      "metadata": {
+        "camera_name": "BOP-01 North Sector PTZ",
+        "tripwire_mode": "bidirectional",
+        "is_calibrated": true
+      }
+    },
+    "created_at": 1700000000,
+    "updated_at": 1700000000
+  },
+  {
+    "id": "cam2_restricted",
+    "config": {
+      "type": "polygon",
+      "coordinates": [
+        [180, 220],
+        [1100, 220],
+        [1100, 660],
+        [180, 660]
+      ],
+      "name": "South Perimeter Checkpoint Zone",
+      "camera_id": "cam2",
+      "enabled": true,
+      "classes": ["person", "car", "truck", "bus", "motorcycle"],
+      "dwell_time": 2.0,
+      "metadata": {
+        "camera_name": "BOP-02 South Perimeter Gate",
+        "field_of_view": "wide_angle_checkpoint",
+        "resolution": [1280, 720],
+        "is_calibrated": true,
+        "description": "Calibrated to Cam 2 / BOP-02 wide-angle field of view for vehicle approach and perimeter monitoring"
+      }
+    },
+    "created_at": 1700000000,
+    "updated_at": 1700000000
+  }
+]
